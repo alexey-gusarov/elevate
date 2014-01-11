@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Elevate</id>
+    <title>Elevate tool</title>
+    <version>1.0</version>
+    <authors>Alexey Gusarov</authors>
+    <owners>Alexey Gusarov</owners>
+    <summary>Elevate program</summary>
+    <description>Tool for running program with elevated permissions without UAC prompt</description>
+    <projectUrl>https://github.com/alexey-gusarov/elevate</projectUrl>
+    <tags>UAC</tags>
+    <copyright />
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <!--<iconUrl>https://raw.github.com/__CHOCO_PKG_OWNER_REPO__/master/__NAME__/__NAME__.png</iconUrl>-->
+    <!--<dependencies>
+      <dependency id="" version="" />
+    </dependencies>-->
+    <!--<releaseNotes></releaseNotes>-->
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
