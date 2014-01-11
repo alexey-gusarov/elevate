@@ -13,26 +13,32 @@ using TaskScheduler;
 
 namespace Elevate
 {
-	internal class Program
+	internal static class Program
 	{
-		private static void Main(string[] args)
+		private static int Main(string[] args)
 		{
 			if (args.Length == 0)
 			{
 				args = new[] { "cmd.exe" };
 			}
 
+			if (args.Intersect(new[] { "/?", "-?" }).Any())
+			{
+				PrintUsage();
+				return 2;
+			}
+
 			if (string.Equals(args[0], "/task", StringComparison.OrdinalIgnoreCase))
 			{
 				RunExeInElevatedmode(args[1]);
-				return;
+				return 0;
 			}
 
 			if (string.Equals(args[0], CreateTaskArgument, StringComparison.OrdinalIgnoreCase))
 			{
 				CreateSchedulerTask();
 				Console.WriteLine(@"Task registered.");
-				return;
+				return 0;
 			}
 
 			ITaskService service = new TaskSchedulerClass();
@@ -49,7 +55,7 @@ namespace Elevate
 			{
 				Console.WriteLine(@"Elevated task not found. Run with parameter {0}. Press enter to exit.", CreateTaskArgument);
 				Console.ReadLine();
-				return;
+				return 1;
 			}
 
 			var sb = new StringBuilder();
@@ -62,6 +68,17 @@ namespace Elevate
 			var @params = Convert.ToBase64String(Encoding.UTF8.GetBytes(sb.ToString()));
 			task.Run(@params);
 			//Main(new string[] { "/task", @params });
+
+			return 0;
+		}
+
+		private static void PrintUsage()
+		{
+			Console.WriteLine(@"el.exe [program] [arguments] [/quoteOff]");
+			Console.WriteLine(@"  'program' - program for elevate. If value is omitted then run 'cmd.exe'.");
+			Console.WriteLine(@"  'quoteOff' - don't use quotation mark with arguments.");
+			Console.Write(@"Press enter to exit.");
+			Console.ReadLine();
 		}
 
 		private static void CreateSchedulerTask()
@@ -112,16 +129,21 @@ namespace Elevate
 				const int workingDirectoryIndex = 0;
 				const int programIndex = 1;
 
-				var psi = new ProcessStartInfo(strings[programIndex], parameters)
+				var fileName = strings[programIndex];
+				var workingDirectory = strings[workingDirectoryIndex];
+
+				Console.WriteLine(@"Trying to start program '{0}' with parameters '{1}' in directory '{2}'.", fileName, parameters, workingDirectory);
+
+				var psi = new ProcessStartInfo(fileName, parameters)
 				{
-					WorkingDirectory = strings[workingDirectoryIndex]
+					WorkingDirectory = workingDirectory
 				};
 				Process.Start(psi);
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine(e);
-				Console.WriteLine(@"Press enter");
+				Console.Write(@"Press enter to exit.");
 				Console.ReadLine();
 			}
 		}
@@ -133,7 +155,8 @@ namespace Elevate
 			var list = new List<string>();
 			foreach (var s in strings)
 			{
-				if (string.Equals(s, "/elevatedquote", StringComparison.InvariantCultureIgnoreCase))
+				if (string.Equals(s, "/elevatedquote", StringComparison.OrdinalIgnoreCase)
+					|| string.Equals(s, "/quoteOff", StringComparison.OrdinalIgnoreCase))
 				{
 					quoteOff = true;
 				}
