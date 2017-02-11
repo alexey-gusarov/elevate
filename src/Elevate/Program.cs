@@ -41,7 +41,7 @@ namespace Elevate
 				return 0;
 			}
 
-			ITaskService service = new TaskSchedulerClass();
+			ITaskService service = new TaskScheduler.TaskScheduler();
 			service.Connect(null, null, null, null);
 			var folder = service.GetFolder("\\");
 
@@ -83,7 +83,7 @@ namespace Elevate
 
 		private static void CreateSchedulerTask()
 		{
-			ITaskService service = new TaskSchedulerClass();
+			ITaskService service = new TaskScheduler.TaskScheduler();
 			service.Connect(null, null, null, null);
 			var folder = service.GetFolder("\\");
 
